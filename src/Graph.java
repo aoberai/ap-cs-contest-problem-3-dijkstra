@@ -3,28 +3,23 @@ import java.util.*;
 public class Graph {
 
     private static ArrayList<Edge> graph = new ArrayList<>();
-    private static int numOfVertices = 4;
+    private static int numOfVertices;
 
     public static void main(String[] args) {
-        addToGraph(new Edge(3, 4, 1));
-        addToGraph(new Edge(1, 2, 3));
-        addToGraph(new Edge(1, 4, 2));
-        addToGraph(new Edge(1, 2, 1));
-        addToGraph(new Edge(2, 3, 500));
-        addToGraph(new Edge(3, 4, 2));
+        graph.add(new Edge(1, 2, 1));
+        graph.add(new Edge(2, 3, 1));
+        graph.add(new Edge(3, 4, 1));
+        graph.add(new Edge(1, 2, 3));
+        graph.add(new Edge(3, 4, 2));
+        graph.add(new Edge(1, 4, 3));
+        numOfVertices = findNumberOfVertices();
         shortestSubPathInPath();
     }
 
-    public static int[] shortestSubPathInPath() {
-        PriorityQueue<Edge> distanceFinder = new PriorityQueue<>(new Comparator<Edge>() {
-            @Override
-            public int compare(Edge o1, Edge o2) {
-                return o1.cost - o2.cost;
-            }
-        });
-        int currentNode, iterationCount = 0;
+    public static void shortestSubPathInPath() {
+        PriorityQueue<Edge> distanceFinder = new PriorityQueue<>(Comparator.comparingInt(o -> o.cost));
+        int currentNode = 0;
         int[] distances = new int[numOfVertices];
-        int[] prevDistances = new int[numOfVertices];
         int[] parents = new int[numOfVertices];
         addToGraph(new Edge(1, 1, 0));
         distanceFinder.addAll(graph);
@@ -44,35 +39,41 @@ public class Graph {
                         distanceFinder.add(new Edge(edge.node2, edge.node1, edge.cost));
                     }
                 }
-                if (!Arrays.equals(prevDistances, distances)) {
-                    System.out.println("Iteration " + (++iterationCount) + ": " + Arrays.toString(distances));
-                }
-                prevDistances = distances.clone();
             }
         }
         parents[0] = -1;
-        System.out.println("----------------------");
-        printSolution(distances, distances.length, parents);
-        return distances;
+        ArrayList<Integer> path = new ArrayList<>();
+        ArrayList<Integer> costs = new ArrayList<>();
+        path.add(1);
+        extrapolatePath(parents, 4, path);
+
+        for (int c = 0; c < path.size() - 1; c++) {
+            for (Edge edge : graph) {
+                if (edge.node1 == path.get(c) && edge.node2 == path.get(c + 1)) {
+                    costs.add(edge.cost);
+                }
+            }
+        }
+
+        System.out.println(Collections.min(costs));
     }
 
-    public static void printPath(int[] parent, int j) {
+    public static int findNumberOfVertices() {
+        HashSet uniqueNumberFinder = new HashSet();
+        for (int i = 0; i < graph.size(); i += 2) {
+            uniqueNumberFinder.add(graph.get(i).node1);
+            uniqueNumberFinder.add(graph.get(i).node2);
+        }
+        return uniqueNumberFinder.size();
+    }
+
+
+    public static void extrapolatePath(int[] parent, int j, ArrayList<Integer> path) {
         if (parent[j - 1] == -1)
             return;
 
-        printPath(parent, parent[j - 1]);
-        System.out.print(j + " ");
-    }
-
-    public static void printSolution(int[] dist, int V,
-                                     int[] parent) {
-        int src = 1;
-        System.out.println("Vertex\t Distance\tPath");
-        for (int i = 1; i <= V; i++) {
-            System.out.printf("\n%d -> %d \t\t %d\t\t%d ",
-                    src, i, dist[i - 1], src);
-            printPath(parent, i);
-        }
+        extrapolatePath(parent, parent[j - 1], path);
+        path.add(j);
     }
 
     public static void addToGraph(Edge e) {
