@@ -22,16 +22,16 @@ as the largest cost found in a given path.
 
 
 - Overview of the code explaining, in broad strokes, the structure of it
-For this problem, everything fits in the Dijkstra class. It stores all the important methods to evaluate the path with the minimum cost and also stores the method to later extrapolate the root
+For this problem, everything fits in the Dijkstra class. It stores all the important methods to evaluate the path with the minimum cost and also stores the method to later extrapolate the route
 to the target node. In addition, it contains the method used to parse the file for data as well as a static class called Edge which stores 3 attributes:
-a node1, node2, and cost. That allows me to create an adjacency list where every connection in a graph was stored in the graph arraylist.
-I made the graph bidirectional by creating a custom add method that added not only the wanted edge but also it's reversed edge simply
+node1, node2, and cost. That allows me to create an adjacency list where every connection in a graph was stored in the graph arraylist.
+I made the graph bidirectional by creating a custom add method that added not only the wanted edge but also it's reversed edge
 allowing me to not actually modify the dijkstra algorithm itself. The dijkstra algorithm works by sorting all connections in a priority queue
 by cost and then incrementally finding adjacent nodes and adding the summation of the path before it with the adjacent nodes cost and storing that
 in the array distance which stores the distance to every node in the graph. Since the paths are constantly reevaluated, more efficient paths overwrite
 previous paths leaving you at the end with the most efficient path to the target. Combining this with a parent array which stores the
 parent node of each node which was found when finding the optimal path,  you can recursively travel back from the target nodes parent back
-to the source node. Given the entire and most optimal path to the target node, you can find the largest link in the path.
+to the source node. Given the most optimal path to the target node, you can find the largest link in the path.
 
 - Discussion of major challenges encountered in the process of making the code
 Something broad that was a real challenge for me was understanding the dijkstra algorithm and how it works. It took me hours to implement it and
