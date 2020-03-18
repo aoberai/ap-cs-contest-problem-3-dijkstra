@@ -10,7 +10,6 @@ public class Graph {
 
     private static ArrayList<Edge> graph = new ArrayList<>();
     private static int[] distances, parents;
-    private static int numOfVertices;
     private static int goalNode;
 
     /**
@@ -21,7 +20,6 @@ public class Graph {
         //Population of graph
         parseFile();
 
-        numOfVertices = goalNode;
         distances = new int[goalNode];
         parents = new int[goalNode];
 
