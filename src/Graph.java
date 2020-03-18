@@ -95,7 +95,7 @@ public class Graph {
             }
         }
 
-        System.out.println(Collections.max(costs));
+        System.out.println(Collections.min(costs));
     }
 
 
