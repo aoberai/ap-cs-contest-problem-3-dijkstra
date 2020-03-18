@@ -6,7 +6,7 @@ import java.util.*;
  * Class that runs dijkstra on a bidirectional graph, finds the shortest path, and prints the maximum cost link within the path.
  * @author adityaoberai
  */
-public class Graph {
+public class Dijkstra {
 
     private static ArrayList<Edge> graph = new ArrayList<>();
     private static int[] distances, parents;
