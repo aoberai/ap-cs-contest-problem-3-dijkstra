@@ -1,3 +1,5 @@
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.*;
 
 /**
@@ -7,8 +9,8 @@ import java.util.*;
 public class Graph {
 
     private static ArrayList<Edge> graph = new ArrayList<>();
-    private static int numOfVertices;
     private static int[] distances, parents;
+    private static int numOfVertices, goalNode, halfNumOfEdges;
 
     /**
      * Tester method for contest problem
@@ -30,7 +32,35 @@ public class Graph {
         dijkstra();
 
         //Finds maximum cost link in path to goal node.
-        printMaximumLinkInPath(4);
+        printMaximumLinkInPath(goalNode);
+    }
+
+    /**
+     * takes data from file and adds it to array
+     *
+     * @throws FileNotFoundException
+     */
+    public static void parseFile() throws FileNotFoundException {
+        String filename = "resources/Input.txt";
+        //parses file and puts numbers in array
+        try (Scanner s = new Scanner(new File(filename))) {
+            goalNode = s.nextInt();
+            halfNumOfEdges = s.nextInt();
+            for (int i = 0; i < halfNumOfEdges; i++) {
+                addToGraph(s.nextInt(), s.nextInt(), s.nextInt());
+            }
+        }
+    }
+
+    /**
+     * Adds edge to graph and the edge's conjugate making the graph bidirectional.
+     * @param node1 First node in edge connection
+     * @param node2 Second node in edge connection
+     * @param cost Cost to cross this edge.
+     */
+    public static void addToGraph(int node1, int node2, int cost) {
+        graph.add(new Edge(node1, node2, cost));
+        graph.add(new Edge(node2, node1, cost));
     }
 
     /**
@@ -40,7 +70,7 @@ public class Graph {
     public static void dijkstra() {
         PriorityQueue<Edge> distanceFinder = new PriorityQueue<>(Comparator.comparingInt(o -> o.cost));
         int currentNode = 0;
-        addToGraph(new Edge(1, 1, 0));
+        addToGraph(1, 1, 0);
         distanceFinder.addAll(graph);
         for (int i = 0; i < numOfVertices; i++) {
             distances[i] = parents[i] = Integer.MAX_VALUE - 300;
@@ -111,15 +141,6 @@ public class Graph {
 
         extrapolatePath(parent, parent[j - 1], path);
         path.add(j);
-    }
-
-    /**
-     * Adds edge to graph and the edge's conjugate making the graph bidirectional.
-     * @param e Edge to add to graph.
-     */
-    public static void addToGraph(Edge e) {
-        graph.add(e);
-        graph.add(new Edge(e.node2, e.node1, e.cost));
     }
 
     /**
