@@ -10,23 +10,20 @@ public class Graph {
 
     private static ArrayList<Edge> graph = new ArrayList<>();
     private static int[] distances, parents;
-    private static int numOfVertices, goalNode, halfNumOfEdges;
+    private static int numOfVertices;
+    private static int goalNode;
 
     /**
      * Tester method for contest problem
      * @param args Required for java main method.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         //Population of graph
-        graph.add(new Edge(1, 2, 1));
-        graph.add(new Edge(2, 3, 1));
-        graph.add(new Edge(3, 4, 1));
-        graph.add(new Edge(1, 2, 3));
-        graph.add(new Edge(3, 4, 2));
-        graph.add(new Edge(1, 4, 3));
-        numOfVertices = findNumberOfVertices();
-        distances = new int[numOfVertices];
-        parents = new int[numOfVertices];
+        parseFile();
+
+        numOfVertices = goalNode;
+        distances = new int[goalNode];
+        parents = new int[goalNode];
 
         //Finds distance to every node
         dijkstra();
@@ -45,7 +42,7 @@ public class Graph {
         //parses file and puts numbers in array
         try (Scanner s = new Scanner(new File(filename))) {
             goalNode = s.nextInt();
-            halfNumOfEdges = s.nextInt();
+            int halfNumOfEdges = s.nextInt();
             for (int i = 0; i < halfNumOfEdges; i++) {
                 addToGraph(s.nextInt(), s.nextInt(), s.nextInt());
             }
@@ -72,7 +69,7 @@ public class Graph {
         int currentNode = 0;
         addToGraph(1, 1, 0);
         distanceFinder.addAll(graph);
-        for (int i = 0; i < numOfVertices; i++) {
+        for (int i = 0; i < goalNode; i++) {
             distances[i] = parents[i] = Integer.MAX_VALUE - 300;
         }
         distances[0] = 0;
@@ -91,21 +88,22 @@ public class Graph {
             }
         }
         parents[0] = -1;
+        System.out.println(Arrays.toString(distances));
     }
 
-    /**
-     * Finds the number of vertices in the graph by adding every vertex into a unique hash set
-     * and finding the total number of objects in the hash set.
-     * @return Number of unique vertices in graph.
-     */
-    public static int findNumberOfVertices() {
-        HashSet<Integer> uniqueNumberFinder = new HashSet<Integer>();
-        for (int i = 0; i < graph.size(); i += 2) {
-            uniqueNumberFinder.add(graph.get(i).node1);
-            uniqueNumberFinder.add(graph.get(i).node2);
-        }
-        return uniqueNumberFinder.size();
-    }
+//    /**
+//     * Finds the number of vertices in the graph by adding every vertex into a unique hash set
+//     * and finding the total number of objects in the hash set.
+//     * @return Number of unique vertices in graph.
+//     */
+//    public static int findNumberOfVertices() {
+//        HashSet<Integer> uniqueNumberFinder = new HashSet<Integer>();
+//        for (int i = 0; i < graph.size(); i += 2) {
+//            uniqueNumberFinder.add(graph.get(i).node1);
+//            uniqueNumberFinder.add(graph.get(i).node2);
+//        }
+//        return uniqueNumberFinder.size();
+//    }
 
     /**
      * Prints maximum link in path to goal node by finding cost of each link in minimum path and finding the maximum of those.
@@ -124,10 +122,8 @@ public class Graph {
                 }
             }
         }
-
-        System.out.println(Collections.min(costs));
+        System.out.println(Collections.max(costs));
     }
-
 
     /**
      * Recursively finds node path to goal node. Method credit to: https://www.geeksforgeeks.org/printing-paths-dijkstras-shortest-path-algorithm/
